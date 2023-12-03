@@ -19,6 +19,10 @@ impl Bag {
     fn valid(&self) -> bool {
         self.red <= 12 && self.green <= 13 && self.blue <= 14
     }
+
+    fn power(&self) -> i32 {
+        self.red * self.green * self.blue
+    }
 }
 
 #[derive(Debug)]
@@ -41,6 +45,30 @@ impl Game {
         let bag_sets = Self::parse_bag_sets(data)?;
 
         Ok(Game { id, bag_sets })
+    }
+
+    fn get_fewest_bag(&self) -> Result<Bag, SecondError> {
+        let blue = self
+            .bag_sets
+            .iter()
+            .max_by(|b1, b2| b1.blue.cmp(&b2.blue))
+            .ok_or(SecondError::InvalidInput)?;
+        let red = self
+            .bag_sets
+            .iter()
+            .max_by(|b1, b2| b1.red.cmp(&b2.red))
+            .ok_or(SecondError::InvalidInput)?;
+        let green = self
+            .bag_sets
+            .iter()
+            .max_by(|b1, b2| b1.green.cmp(&b2.green))
+            .ok_or(SecondError::InvalidInput)?;
+
+        Ok(Bag {
+            red: red.red,
+            green: green.green,
+            blue: blue.blue,
+        })
     }
 
     fn all_valid(&self) -> bool {
@@ -106,4 +134,21 @@ pub fn solve_part_one() -> Result<i32, SecondError> {
         .collect();
 
     Ok(sum_valid_ids(&games))
+}
+
+fn sum_fewest_bags_power(games: &Vec<Game>) -> i32 {
+    games
+        .into_iter()
+        .map(|b| b.get_fewest_bag().map(|b| b.power()).unwrap_or(0))
+        .sum()
+}
+
+pub fn solve_part_two() -> Result<i32, SecondError> {
+    let file = std::fs::read_to_string(INPUT_PATH).map_err(|_| SecondError::CantFindFile)?;
+    let games: Vec<Game> = file
+        .lines()
+        .filter_map(|line| Game::new(line).ok())
+        .collect();
+
+    Ok(sum_fewest_bags_power(&games))
 }
