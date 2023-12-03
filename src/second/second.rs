@@ -123,11 +123,8 @@ fn sum_valid_ids(games: &Vec<Game>) -> i32 {
         .sum()
 }
 
-const INPUT_PATH: &str = "src/second/input.txt";
-const TEST_INPUT_PATH: &str = "src/second/test_input.txt";
-
-pub fn solve_part_one() -> Result<i32, SecondError> {
-    let file = std::fs::read_to_string(INPUT_PATH).map_err(|_| SecondError::CantFindFile)?;
+pub fn solve_part_one(path: &str) -> Result<i32, SecondError> {
+    let file = std::fs::read_to_string(path).map_err(|_| SecondError::CantFindFile)?;
     let games: Vec<Game> = file
         .lines()
         .filter_map(|line| Game::new(line).ok())
@@ -143,12 +140,32 @@ fn sum_fewest_bags_power(games: &Vec<Game>) -> i32 {
         .sum()
 }
 
-pub fn solve_part_two() -> Result<i32, SecondError> {
-    let file = std::fs::read_to_string(INPUT_PATH).map_err(|_| SecondError::CantFindFile)?;
+pub fn solve_part_two(path: &str) -> Result<i32, SecondError> {
+    let file = std::fs::read_to_string(path).map_err(|_| SecondError::CantFindFile)?;
     let games: Vec<Game> = file
         .lines()
         .filter_map(|line| Game::new(line).ok())
         .collect();
 
     Ok(sum_fewest_bags_power(&games))
+}
+
+#[cfg(test)]
+mod test {
+
+    const TEST_INPUT_PATH: &str = "src/second/test_input.txt";
+
+    #[test]
+    fn test_part_one() {
+        let solve = super::solve_part_one(TEST_INPUT_PATH).unwrap();
+
+        assert_eq!(solve, 8);
+    }
+
+    #[test]
+    fn test_part_two() {
+        let solve = super::solve_part_one(TEST_INPUT_PATH).unwrap();
+
+        assert_eq!(solve, 8);
+    }
 }
