@@ -40,4 +40,12 @@ fn main() {
         Ok(res) => println!("Third - Part One -> {res}"),
         Err(err) => println!("Third - Part One Error -> {err:?}"),
     }
+
+    println!("");
+
+    let res = third::third::solve_part_two("src/third/input.txt");
+    match res {
+        Ok(res) => println!("Third - Part Two -> {res}"),
+        Err(err) => println!("Third - Part Two Error -> {err:?}"),
+    }
 }
