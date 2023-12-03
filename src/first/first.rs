@@ -4,11 +4,8 @@ pub enum FirstError {
     InvalidNumber,
 }
 
-const INPUT_PATH: &str = "src/first/input.txt";
-const TEST_INPUT_PATH: &str = "src/first/test_input.txt";
-
-pub fn solve_part_one() -> Result<i64, FirstError> {
-    let file = std::fs::read_to_string(INPUT_PATH).map_err(|_| FirstError::CantFindFile)?;
+pub fn solve_part_one(path: &str) -> Result<i64, FirstError> {
+    let file = std::fs::read_to_string(path).map_err(|_| FirstError::CantFindFile)?;
     let lines = file.lines();
     let mut result = 0;
     for line in lines {
@@ -18,7 +15,6 @@ pub fn solve_part_one() -> Result<i64, FirstError> {
         let first = chars.clone().next().unwrap_or_else(|| '0');
         let last = chars.rev().next().unwrap_or_else(|| '0');
         let number = format!("{first}{last}");
-        println!("{line} -> {number}");
         let mapped_number: i64 = number.parse().map_err(|_| FirstError::InvalidNumber)?;
         result += mapped_number;
     }
@@ -40,7 +36,7 @@ impl Digit {
     }
 }
 
-pub fn solve_part_two() -> Result<i64, FirstError> {
+pub fn solve_part_two(path: &str) -> Result<i64, FirstError> {
     let digits: Vec<Digit> = vec![
         Digit::new("one", 1),
         Digit::new("two", 2),
@@ -52,7 +48,7 @@ pub fn solve_part_two() -> Result<i64, FirstError> {
         Digit::new("eight", 8),
         Digit::new("nine", 9),
     ];
-    let file = std::fs::read_to_string(INPUT_PATH).map_err(|_| FirstError::CantFindFile)?;
+    let file = std::fs::read_to_string(path).map_err(|_| FirstError::CantFindFile)?;
     let lines = file.lines();
     let mut result = 0;
     for line in lines {
@@ -98,10 +94,27 @@ pub fn solve_part_two() -> Result<i64, FirstError> {
             .next()
             .unwrap_or_else(|| "0".to_string());
         let number = format!("{first}{last}");
-        println!("{line} -> {number}");
         let mapped_number: i64 = number.parse().map_err(|_| FirstError::InvalidNumber)?;
         result += mapped_number;
     }
     // 5. return result
     return Ok(result);
+}
+
+#[cfg(test)]
+mod test {
+
+    #[test]
+    fn test_part_one() {
+        let solve = super::solve_part_one("src/first/test_input-1.txt").unwrap();
+
+        assert_eq!(solve, 142);
+    }
+
+    #[test]
+    fn test_part_two() {
+        let solve = super::solve_part_two("src/first/test_input-2.txt").unwrap();
+
+        assert_eq!(solve, 281);
+    }
 }
